@@ -1,4 +1,4 @@
-name: Inspect StarTune Android Project
+name: Inspect StarTune Project ZIP
 
 on:
   workflow_dispatch:
