@@ -1,4 +1,4 @@
-name: Build StarTune APK
+name: Inspect StarTune Android Project
 
 on:
   workflow_dispatch:
@@ -7,18 +7,24 @@ on:
       - main
 
 jobs:
-  build:
+  inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Download repository files
         uses: actions/checkout@v4
 
-      - name: Check project archive
+      - name: Check ZIP archive
         run: |
-          ls -la
-          unzip -l StarTuneAndroid_source.zip
-
-      - name: Stop until project structure is verified
-        run: |
-          echo "Archive uploaded. Need to verify its contents before compiling."
-          exit 1
+          echo "Checking project archive..."
+          ls -lah
+          echo "Searching for ZIP archives..."
+          find . -maxdepth 2 -type f -iname '*.zip' -print
+          ZIP_FILE="$(find . -maxdepth 2 -type f -iname '*.zip' -print -quit)"
+          if [ -n "$ZIP_FILE" ]; then
+            echo "Found archive: $ZIP_FILE"
+            unzip -l "$ZIP_FILE"
+          else
+            echo "No ZIP archive found in repository."
+            find . -maxdepth 3 -type f
+            exit 1
+          fi
